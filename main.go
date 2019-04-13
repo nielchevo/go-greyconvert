@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
-	_ "image/jpeg"
 	"log"
 	"os"
 )
@@ -29,7 +28,8 @@ func main() {
 	//create a new props image
 	size := img.Bounds().Size()
 	rect := image.Rect(0, 0, size.X, size.Y)
-	newImg := image.NewRGBA(rect)
+	//newImg := image.NewRGBA(rect)
+	grayImg := image.NewGray(rect)
 
 	// itterate every pixels
 	for y := 0; y < img.Bounds().Dy(); y++ {
@@ -45,8 +45,10 @@ func main() {
 			grey := uint8(r + g + b/3)
 
 			// set grey color to new img container
+			fmt.Printf("R : %e, G: %e, B: %e, channel: %u\n", r, g, b, grey)
 			imgColor := color.RGBA{R: grey, G: grey, B: grey, A: originalColor.A}
-			newImg.Set(x, y, imgColor)
+
+			grayImg.Set(x, y, imgColor)
 		}
 	}
 
@@ -55,7 +57,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = jpeg.Encode(saveFile, newImg, nil)
+	err = jpeg.Encode(saveFile, grayImg, nil)
 
 	defer saveFile.Close()
 }
